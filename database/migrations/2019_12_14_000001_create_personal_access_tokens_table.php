@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEndpointsTable extends Migration
+class CreatePersonalAccessTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateEndpointsTable extends Migration
      */
     public function up()
     {
-        Schema::create('endpoints', function (Blueprint $table) {
+        Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->nullable(false);
-            $table->longText('description')->nullable();
-            
-            $table->bigInteger('permission_id')->nullable();
-
-            $table->softDeletes();
+            $table->morphs('tokenable');
+            $table->string('name');
+            $table->string('token', 64)->unique();
+            $table->text('abilities')->nullable();
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ class CreateEndpointsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('endpoints');
+        Schema::dropIfExists('personal_access_tokens');
     }
 }
